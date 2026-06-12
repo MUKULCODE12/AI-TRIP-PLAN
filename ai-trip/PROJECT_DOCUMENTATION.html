@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan Me a Trip — Project Documentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #16a34a;
+      --primary-light: #dcfce7;
+      --dark: #111827;
+      --gray: #6b7280;
+      --light: #f9fafb;
+      --border: #e5e7eb;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --orange: #f97316;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      color: var(--dark);
+      line-height: 1.7;
+      background: #fff;
+      font-size: 14px;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 50px;
+    }
+
+    /* COVER PAGE */
+    .cover {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      page-break-after: always;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 30%, #eff6ff 70%, #f5f3ff 100%);
+      padding: 60px 40px;
+    }
+
+    .cover-icon {
+      font-size: 80px;
+      margin-bottom: 30px;
+    }
+
+    .cover h1 {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--dark);
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .cover h1 span { color: var(--primary); }
+
+    .cover .subtitle {
+      font-size: 20px;
+      color: var(--gray);
+      font-weight: 400;
+      margin-bottom: 40px;
+    }
+
+    .cover .doc-type {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 60px;
+      background: var(--primary-light);
+      padding: 10px 30px;
+      border-radius: 100px;
+    }
+
+    .cover-meta {
+      color: var(--gray);
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    .cover-meta strong { color: var(--dark); }
+
+    /* SECTIONS */
+    h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 50px 0 20px 0;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--primary);
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      margin: 30px 0 12px 0;
+      page-break-after: avoid;
+    }
+
+    h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray);
+      margin: 20px 0 8px 0;
+    }
+
+    p { margin-bottom: 12px; color: #374151; }
+
+    ul, ol {
+      margin: 10px 0 16px 24px;
+      color: #374151;
+    }
+
+    li { margin-bottom: 6px; }
+
+    /* TABLES */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px 0;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--dark);
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) td { background: var(--light); }
+
+    /* CODE */
+    code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12.5px;
+      color: #dc2626;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 12px 0 20px 0;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    pre code {
+      background: none;
+      color: inherit;
+      padding: 0;
+    }
+
+    /* BADGES */
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 20px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #ede9fe; color: #5b21b6; }
+    .badge-orange { background: #ffedd5; color: #c2410c; }
+    .badge-gray { background: #f3f4f6; color: #374151; }
+
+    /* CARDS */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0 24px 0;
+    }
+
+    .feature-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      page-break-inside: avoid;
+    }
+
+    .feature-card .icon { font-size: 28px; margin-bottom: 10px; }
+    .feature-card h4 { margin: 0 0 6px 0; color: var(--dark); font-size: 14px; }
+    .feature-card p { font-size: 12.5px; color: var(--gray); margin: 0; }
+
+    /* FLOW DIAGRAM */
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .flow-arrow { font-size: 20px; color: var(--primary); }
+
+    /* ARCHITECTURE BOX */
+    .arch-box {
+      background: var(--light);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin: 16px 0 24px 0;
+    }
+
+    .arch-layer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .arch-layer:last-child { border: none; }
+
+    .arch-label {
+      min-width: 100px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary);
+    }
+
+    .arch-desc { font-size: 13px; color: var(--gray); }
+
+    /* FILE TREE */
+    .file-tree {
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 20px 24px;
+      border-radius: 10px;
+      font-family: 'Consolas', monospace;
+      font-size: 12.5px;
+      line-height: 1.8;
+      margin: 12px 0 24px 0;
+    }
+
+    .file-tree .dir { color: #60a5fa; font-weight: 600; }
+    .file-tree .file { color: #a5b4fc; }
+    .file-tree .new { color: #4ade80; }
+    .file-tree .mod { color: #fbbf24; }
+
+    /* INFO BOX */
+    .info-box {
+      border-left: 4px solid var(--primary);
+      background: var(--primary-light);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+
+    .info-box.blue {
+      border-color: var(--blue);
+      background: #dbeafe;
+    }
+
+    .info-box p { margin: 0; font-size: 13px; }
+
+    /* TOC */
+    .toc {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 30px;
+      margin: 20px 0 30px 0;
+    }
+
+    .toc h3 { margin: 0 0 14px 0; }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .toc li {
+      padding: 4px 0;
+      font-size: 14px;
+    }
+
+    .toc a {
+      color: var(--dark);
+      text-decoration: none;
+    }
+
+    .toc a:hover { color: var(--primary); }
+
+    /* PRINT */
+    @media print {
+      body { font-size: 12px; }
+      .page { padding: 30px 40px; }
+      .cover { min-height: auto; padding: 80px 40px; }
+      h2 { font-size: 22px; margin-top: 30px; }
+      pre { font-size: 11px; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .page-break { page-break-before: always; }
+
+    /* SEPARATOR */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== COVER PAGE ==================== -->
+<div class="cover">
+  <div class="cover-icon">✈️</div>
+  <h1>Plan Me a <span>Trip</span></h1>
+  <p class="subtitle">AI-Powered Trip Planning Application</p>
+  <div class="doc-type">Project Documentation</div>
+  <div class="cover-meta">
+    <strong>Developer:</strong> Sidharth Chopra<br>
+    <strong>Technology:</strong> Next.js · React · Convex · Clerk · Groq AI<br>
+    <strong>Date:</strong> April 2026<br>
+    <strong>Version:</strong> 1.0
+  </div>
+</div>
+
+<!-- ==================== CONTENT ==================== -->
+<div class="page">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h3>📑 Table of Contents</h3>
+    <ol>
+      <li><a href="#overview">Project Overview</a></li>
+      <li><a href="#tech">Technology Stack</a></li>
+      <li><a href="#architecture">System Architecture</a></li>
+      <li><a href="#structure">Project Structure</a></li>
+      <li><a href="#features">Features Explained</a></li>
+      <li><a href="#backend">Backend — Convex Database</a></li>
+      <li><a href="#ai">AI Integration — Groq API</a></li>
+      <li><a href="#auth">Authentication — Clerk</a></li>
+      <li><a href="#frontend">Frontend Components</a></li>
+      <li><a href="#pages">Pages & Routing</a></li>
+      <li><a href="#state">State Management</a></li>
+      <li><a href="#api">API Routes</a></li>
+      <li><a href="#responsive">Responsive Design</a></li>
+      <li><a href="#setup">Setup & Running</a></li>
+      <li><a href="#env">Environment Variables</a></li>
+      <li><a href="#future">Future Enhancements</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. PROJECT OVERVIEW -->
+  <h2 id="overview">1. Project Overview</h2>
+  
+  <p><strong>Plan Me a Trip</strong> is a full-stack AI-powered travel planning application that helps users create personalized trip itineraries through a conversational AI interface. The application collects user preferences (destination, budget, group size, duration) through an interactive chat and generates a detailed day-by-day itinerary with hotel recommendations, activity suggestions, and cost estimates in Indian Rupees (₹).</p>
+
+  <div class="info-box">
+    <p><strong>Key Value Proposition:</strong> Instead of spending hours researching destinations, hotels, and activities, users simply chat with an AI assistant that generates a complete trip plan in under a minute.</p>
+  </div>
+
+  <h3>Core Workflow</h3>
+  <div class="flow">
+    <div class="flow-step">💬 Chat with AI</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🎯 Pick Preferences</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">✨ AI Generates Plan</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🗺️ View Itinerary</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">💾 Save & Revisit</div>
+  </div>
+
+  <!-- 2. TECHNOLOGY STACK -->
+  <h2 id="tech">2. Technology Stack</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Technology</th>
+        <th>Version</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Framework</strong></td>
+        <td>Next.js</td>
+        <td>16.1.6</td>
+        <td>Full-stack React framework with App Router, API routes, SSR/SSG</td>
+      </tr>
+      <tr>
+        <td><strong>UI Library</strong></td>
+        <td>React</td>
+        <td>19.2.3</td>
+        <td>Component-based UI with hooks, context API, suspense</td>
+      </tr>
+      <tr>
+        <td><strong>Language</strong></td>
+        <td>TypeScript</td>
+        <td>5.x</td>
+        <td>Type-safe JavaScript with interfaces and generics</td>
+      </tr>
+      <tr>
+        <td><strong>Database</strong></td>
+        <td>Convex</td>
+        <td>1.31.7</td>
+        <td>Serverless real-time database with mutations and queries</td>
+      </tr>
+      <tr>
+        <td><strong>Authentication</strong></td>
+        <td>Clerk</td>
+        <td>6.37.1</td>
+        <td>User authentication, session management, OAuth providers</td>
+      </tr>
+      <tr>
+        <td><strong>AI Model</strong></td>
+        <td>Groq (Llama 3.3 70B)</td>
+        <td>SDK 0.37</td>
+        <td>LLM for conversational trip planning and JSON generation</td>
+      </tr>
+      <tr>
+        <td><strong>Styling</strong></td>
+        <td>Tailwind CSS</td>
+        <td>4.x</td>
+        <td>Utility-first CSS with custom design tokens</td>
+      </tr>
+      <tr>
+        <td><strong>Animations</strong></td>
+        <td>Motion (Framer Motion)</td>
+        <td>12.38</td>
+        <td>Scroll-driven animations for the timeline component</td>
+      </tr>
+      <tr>
+        <td><strong>HTTP Client</strong></td>
+        <td>Axios</td>
+        <td>1.13.4</td>
+        <td>API calls from frontend to backend routes</td>
+      </tr>
+      <tr>
+        <td><strong>Icons</strong></td>
+        <td>Lucide React</td>
+        <td>0.563</td>
+        <td>Consistent, modern icon set used across all components</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="tech-badges">
+    <span class="badge badge-green">Next.js 16</span>
+    <span class="badge badge-blue">React 19</span>
+    <span class="badge badge-purple">TypeScript</span>
+    <span class="badge badge-orange">Convex</span>
+    <span class="badge badge-green">Clerk Auth</span>
+    <span class="badge badge-blue">Groq AI</span>
+    <span class="badge badge-purple">Tailwind v4</span>
+    <span class="badge badge-gray">Framer Motion</span>
+  </div>
+
+  <!-- 3. ARCHITECTURE -->
+  <h2 id="architecture">3. System Architecture</h2>
+
+  <p>The application follows a <strong>modern JAMstack architecture</strong> with serverless backend functions and real-time data synchronization.</p>
+
+  <div class="arch-box">
+    <div class="arch-layer">
+      <div class="arch-label">🖥️ Frontend</div>
+      <div class="arch-desc">Next.js App Router — React components rendered via SSR/SSG, client-side navigation</div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">🔌 API Layer</div>
+      <div class="arch-desc">Next.js API Routes — Server-side endpoints for AI model and Google Places proxy</div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">🤖 AI Service</div>
+      <div class="arch-desc">Groq Cloud — Llama 3.3 70B model via REST API with structured JSON responses</div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">🗄️ Database</div>
+      <div class="arch-desc">Convex — Real-time serverless DB with schema validation, indexes, and subscriptions</div>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-label">🔐 Auth</div>
+      <div class="arch-desc">Clerk — Hosted authentication service with React components and session tokens</div>
+    </div>
+  </div>
+
+  <h3>Data Flow Diagram</h3>
+  <pre><code>
+  User → [Browser/React] → [Next.js API Route] → [Groq AI API]
+                ↕                                      ↓
+         [Clerk Auth]                          [JSON Trip Plan]
+                ↕                                      ↓
+         [Convex SDK] ←←←←←←←←←←←←←←← [Save to Convex DB]
+                ↓
+    [Real-time subscriptions → UI updates automatically]
+  </code></pre>
+
+  <div class="page-break"></div>
+
+  <!-- 4. PROJECT STRUCTURE -->
+  <h2 id="structure">4. Project Structure</h2>
+
+  <div class="file-tree">
+    <span class="dir">ai-trip/</span><br>
+    ├── <span class="dir">app/</span><br>
+    │   ├── <span class="dir">(auth)/</span><br>
+    │   │   ├── <span class="dir">sign-in/[[...sign-in]]/</span> <span class="file">page.tsx</span><br>
+    │   │   └── <span class="dir">sign-up/[[...sign-up]]/</span> <span class="file">page.tsx</span><br>
+    │   ├── <span class="dir">_components/</span><br>
+    │   │   ├── <span class="mod">Header.tsx</span> — Sticky nav with auth, mobile menu<br>
+    │   │   ├── <span class="file">Hero.tsx</span> — Landing hero with search box<br>
+    │   │   ├── <span class="file">Popluarcitylist.tsx</span> — Carousel of destinations<br>
+    │   │   ├── <span class="new">HowItWorks.tsx</span> — 3-step visual guide<br>
+    │   │   └── <span class="new">Footer.tsx</span> — Site footer<br>
+    │   ├── <span class="dir">api/</span><br>
+    │   │   └── <span class="dir">aimodel/</span><br>
+    │   │       ├── <span class="mod">route.ts</span> — AI chat + trip generation endpoint<br>
+    │   │       └── <span class="dir">google-place-detail/</span> <span class="file">route.tsx</span><br>
+    │   ├── <span class="dir">create-new-trip/</span><br>
+    │   │   ├── <span class="mod">page.tsx</span> — Split-screen layout with TripProvider<br>
+    │   │   └── <span class="dir">_components/</span><br>
+    │   │       ├── <span class="mod">ChatBox.tsx</span> — Conversational AI interface<br>
+    │   │       ├── <span class="mod">Itinerary.tsx</span> — Dynamic itinerary display<br>
+    │   │       ├── <span class="file">BudgetUi.tsx</span> — Budget selector cards<br>
+    │   │       ├── <span class="file">GroupSizeUi.tsx</span> — Group size selector<br>
+    │   │       ├── <span class="file">SelectDaysUi.tsx</span> — Trip duration picker<br>
+    │   │       ├── <span class="file">FinalUi.tsx</span> — Generate trip button<br>
+    │   │       ├── <span class="file">EmptyBoxState.tsx</span> — Empty chat state<br>
+    │   │       └── <span class="file">HotelCardItem.tsx</span> — Hotel card component<br>
+    │   ├── <span class="new">my-trips/</span><br>
+    │   │   ├── <span class="new">page.tsx</span> — Trips dashboard<br>
+    │   │   └── <span class="new">[tripId]/page.tsx</span> — Trip detail view<br>
+    │   ├── <span class="file">ConvexClientProvider.tsx</span><br>
+    │   ├── <span class="file">provider.tsx</span> — User context provider<br>
+    │   ├── <span class="file">layout.tsx</span> — Root layout<br>
+    │   ├── <span class="mod">page.tsx</span> — Home page<br>
+    │   └── <span class="file">globals.css</span> — Tailwind + design tokens<br>
+    ├── <span class="dir">components/ui/</span> — Shared UI (button, timeline, carousel, textarea)<br>
+    ├── <span class="dir">context/</span><br>
+    │   └── <span class="new">TripContext.tsx</span> — Shared trip state<br>
+    ├── <span class="dir">convex/</span><br>
+    │   ├── <span class="file">schema.ts</span> — Database schema<br>
+    │   ├── <span class="mod">tripDetail.ts</span> — CRUD operations for trips<br>
+    │   └── <span class="file">user.ts</span> — User management<br>
+    ├── <span class="file">package.json</span><br>
+    ├── <span class="file">next.config.ts</span><br>
+    └── <span class="file">tsconfig.json</span><br>
+    <br>
+    <span style="color:#4ade80">■</span> = NEW file &nbsp;&nbsp; <span style="color:#fbbf24">■</span> = MODIFIED file
+  </div>
+
+  <!-- 5. FEATURES -->
+  <h2 id="features">5. Features Explained</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon">🤖</div>
+      <h4>AI-Powered Chat Interface</h4>
+      <p>Multi-step conversational flow that collects trip preferences through natural language and interactive UI components (generative UI pattern).</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🗺️</div>
+      <h4>Real-Time Itinerary Generation</h4>
+      <p>AI generates a complete day-by-day plan with activities, timings, costs (in ₹), and the itinerary panel updates instantly via React Context.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🏨</div>
+      <h4>Hotel Recommendations</h4>
+      <p>Budget-appropriate hotel suggestions with ratings, per-night pricing, descriptions, and Google Maps links for each hotel.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">📋</div>
+      <h4>My Trips Dashboard</h4>
+      <p>Saved trips displayed as visual cards with destination imagery, metadata tags (duration, budget, group), view and delete actions.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🔐</div>
+      <h4>Full Authentication</h4>
+      <p>Clerk-based sign-in/sign-up with Google OAuth, email, and session management. User profiles with avatars and sign-out.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">📱</div>
+      <h4>Responsive Design</h4>
+      <p>Mobile-first layout with hamburger menu, stacked panels on mobile, and optimized card grids that adapt to all screen sizes.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">⚡</div>
+      <h4>Real-Time Data Sync</h4>
+      <p>Convex provides real-time subscriptions — when a trip is saved or deleted, all connected clients update automatically without polling.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🎨</div>
+      <h4>Premium UI/UX</h4>
+      <p>Glassmorphism header, animated timeline with scroll-driven progress, carousel, hover effects, loading skeletons, and polished empty states.</p>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- 6. BACKEND -->
+  <h2 id="backend">6. Backend — Convex Database</h2>
+
+  <h3>6.1 Database Schema</h3>
+  <p>The database uses Convex's schema validation system with two tables:</p>
+
+  <pre><code>// convex/schema.ts
+defineSchema({
+  UserTable: defineTable({
+    name: v.string(),        // Display name from Clerk
+    email: v.string(),       // Email address
+    imageUrl: v.string(),    // Profile picture URL
+    subscription: v.optional(v.string()),
+  }),
+
+  TripDetailTable: defineTable({
+    tripId: v.string(),      // UUID generated on frontend
+    tripDetail: v.any(),     // AI-generated JSON trip plan
+    uid: v.id("UserTable"),  // Foreign key to UserTable
+  }).index("by_uid", ["uid"]), // Index for fast user-specific queries
+});</code></pre>
+
+  <h3>6.2 Mutations (Write Operations)</h3>
+
+  <table>
+    <thead>
+      <tr><th>Function</th><th>File</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>CreateNewUser</code></td>
+        <td>convex/user.ts</td>
+        <td>Creates a user record (or returns existing) when user signs in via Clerk. Uses email as unique identifier.</td>
+      </tr>
+      <tr>
+        <td><code>CreateTripDetail</code></td>
+        <td>convex/tripDetail.ts</td>
+        <td>Saves a new trip with tripId (UUID), tripDetail (AI JSON), and uid (user reference).</td>
+      </tr>
+      <tr>
+        <td><code>DeleteTrip</code></td>
+        <td>convex/tripDetail.ts</td>
+        <td>Deletes a trip by its Convex document <code>_id</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 Queries (Read Operations)</h3>
+
+  <table>
+    <thead>
+      <tr><th>Function</th><th>File</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>GetUserTrips</code></td>
+        <td>convex/tripDetail.ts</td>
+        <td>Fetches all trips for a user using the <code>by_uid</code> index, ordered newest first.</td>
+      </tr>
+      <tr>
+        <td><code>GetTripByTripId</code></td>
+        <td>convex/tripDetail.ts</td>
+        <td>Fetches a single trip by its UUID string for the trip detail page.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <p><strong>Why Convex?</strong> Unlike traditional REST APIs, Convex provides real-time subscriptions out of the box. When a trip is saved or deleted, all connected browser tabs update automatically — no polling, no WebSocket setup needed. The <code>useQuery</code> hook subscribes to live data.</p>
+  </div>
+
+  <!-- 7. AI INTEGRATION -->
+  <h2 id="ai">7. AI Integration — Groq API</h2>
+
+  <h3>7.1 How the AI Works</h3>
+  <p>The application uses <strong>Groq's Llama 3.3 70B Versatile</strong> model — a powerful open-source LLM served via Groq's ultra-fast inference API. The AI operates in two modes:</p>
+
+  <h4>Mode 1: Conversational Chat</h4>
+  <p>The AI acts as a trip planner assistant, guiding users through a structured flow:</p>
+  <ol>
+    <li>Understand the <strong>origin</strong> and <strong>destination</strong></li>
+    <li>Show <strong>budget options</strong> (Cheap / Moderate / Luxury) via generative UI</li>
+    <li>Show <strong>group size options</strong> (Solo / Couple / Family / Friends) via generative UI</li>
+    <li>Show <strong>trip duration selector</strong> via generative UI</li>
+    <li>Confirm all details and show <strong>generate button</strong></li>
+  </ol>
+
+  <p>Each AI response is structured JSON:</p>
+  <pre><code>{
+  "responseText": "Friendly message to the user",
+  "ui": "budget"  // Controls which UI component to render
+}</code></pre>
+
+  <h4>Mode 2: Final Trip Generation</h4>
+  <p>When the user clicks "View My Trip", the full conversation is sent with <code>isFinal: true</code>, and the AI generates a complete trip plan:</p>
+  <pre><code>{
+  "trip_plan": {
+    "origin": "Mumbai, India",
+    "destination": "Goa, India",
+    "duration": "3 Days",
+    "budget": "Moderate",
+    "groupSize": "Friends (5 to 10 People)",
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Day 1: Beach & Culture",
+        "activities": [
+          {
+            "time": "9:00 AM",
+            "activity": "Visit Basilica of Bom Jesus",
+            "description": "UNESCO World Heritage Site...",
+            "estimatedCost": "₹100"
+          }
+        ]
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Taj Holiday Village",
+        "pricePerNight": "₹8,000",
+        "rating": "4.5",
+        "description": "Luxury beachfront resort..."
+      }
+    ],
+    "estimatedTotalCost": "₹45,000"
+  }
+}</code></pre>
+
+  <h3>7.2 Generative UI Pattern</h3>
+  <p>This project implements the <strong>Generative UI</strong> pattern — the AI doesn't just return text, it controls which interactive UI component appears. The <code>ui</code> field in the AI response maps to React components:</p>
+
+  <table>
+    <thead><tr><th>UI Value</th><th>Component</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>"budget"</code></td><td>BudgetUi</td><td>3 budget option cards (Cheap, Moderate, Luxury)</td></tr>
+      <tr><td><code>"groupSize"</code></td><td>GroupSizeUi</td><td>4 group type cards (Solo, Couple, Family, Friends)</td></tr>
+      <tr><td><code>"tripDuration"</code></td><td>SelectDaysUi</td><td>Day counter with +/- buttons</td></tr>
+      <tr><td><code>"final"</code></td><td>FinalUi</td><td>Generate trip button with animation</td></tr>
+      <tr><td><code>"none"</code></td><td>—</td><td>Regular text message, no UI component</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- 8. AUTH -->
+  <h2 id="auth">8. Authentication — Clerk</h2>
+
+  <h3>8.1 Setup</h3>
+  <p>Clerk handles all authentication concerns with zero custom auth code:</p>
+  <ul>
+    <li><strong>ClerkProvider</strong> wraps the entire app in <code>layout.tsx</code></li>
+    <li><strong>SignInButton</strong> opens Clerk's modal for unauthenticated users</li>
+    <li><strong>UserButton</strong> shows the profile avatar with sign-out option</li>
+    <li><strong>useUser</strong> hook provides current user data in any component</li>
+  </ul>
+
+  <h3>8.2 User Sync with Convex</h3>
+  <p>When a user signs in via Clerk, the <code>UserDetailProvider</code> (in <code>provider.tsx</code>) calls the <code>CreateNewUser</code> mutation to sync the user into Convex's <code>UserTable</code>. If the user already exists (matched by email), it returns the existing record. This ensures every Clerk user has a corresponding Convex user with a stable <code>_id</code> used for trip ownership.</p>
+
+  <h3>8.3 Auth Routes</h3>
+  <table>
+    <thead><tr><th>Route</th><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>/sign-in</code></td><td>Clerk &lt;SignIn /&gt;</td><td>Full-page sign-in form</td></tr>
+      <tr><td><code>/sign-up</code></td><td>Clerk &lt;SignUp /&gt;</td><td>Full-page registration form</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 9. FRONTEND COMPONENTS -->
+  <h2 id="frontend">9. Frontend Components</h2>
+
+  <h3>9.1 Shared UI Components</h3>
+  <p>Located in <code>components/ui/</code>, these are reusable primitives:</p>
+
+  <table>
+    <thead><tr><th>Component</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>Button</code></td><td>Customizable button with variants (default, outline, ghost) and sizes. Uses class-variance-authority (CVA).</td></tr>
+      <tr><td><code>Textarea</code></td><td>Styled textarea for the chat input and hero search box.</td></tr>
+      <tr><td><code>Timeline</code></td><td>Scroll-animated vertical timeline using Framer Motion. Shows trip header (origin → destination, duration, budget, group) and renders day-by-day content.</td></tr>
+      <tr><td><code>Carousel (Apple Cards)</code></td><td>Horizontal scrolling carousel for popular destinations on the home page.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.2 Trip Planning Components</h3>
+
+  <table>
+    <thead><tr><th>Component</th><th>File</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><strong>ChatBox</strong></td><td>create-new-trip/_components/ChatBox.tsx</td><td>Full chat interface: message list, input, send button, auto-scroll, generative UI rendering. Sends messages to /api/aimodel and handles the multi-step flow.</td></tr>
+      <tr><td><strong>Itinerary</strong></td><td>create-new-trip/_components/Itinerary.tsx</td><td>Reads from TripContext and renders the complete trip plan using the Timeline component. Shows an animated empty state before generation.</td></tr>
+      <tr><td><strong>BudgetUi</strong></td><td>create-new-trip/_components/BudgetUi.tsx</td><td>Three clickable cards for budget selection (Cheap/Moderate/Luxury).</td></tr>
+      <tr><td><strong>GroupSizeUi</strong></td><td>create-new-trip/_components/GroupSizeUi.tsx</td><td>Four clickable cards for traveler type (Solo/Couple/Family/Friends).</td></tr>
+      <tr><td><strong>SelectDaysUi</strong></td><td>create-new-trip/_components/SelectDaysUi.tsx</td><td>Number stepper (−/+) for choosing trip duration in days.</td></tr>
+      <tr><td><strong>FinalUi</strong></td><td>create-new-trip/_components/FinalUi.tsx</td><td>"View My Trip" button with loading state that triggers itinerary generation.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- 10. PAGES -->
+  <h2 id="pages">10. Pages & Routing</h2>
+
+  <p>The application uses <strong>Next.js App Router</strong> with file-based routing:</p>
+
+  <table>
+    <thead>
+      <tr><th>Route</th><th>Type</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>/</code></td>
+        <td>Static</td>
+        <td><strong>Home Page</strong> — Hero section with search, Popular Destinations carousel, "How It Works" 3-step guide, Footer.</td>
+      </tr>
+      <tr>
+        <td><code>/create-new-trip</code></td>
+        <td>Static</td>
+        <td><strong>Trip Creation Page</strong> — Split-screen: 35% AI Chat (left) + 65% Live Itinerary (right). Wrapped in TripProvider for shared state.</td>
+      </tr>
+      <tr>
+        <td><code>/my-trips</code></td>
+        <td>Static</td>
+        <td><strong>My Trips Dashboard</strong> — Grid of saved trip cards with destination images, metadata tags, view/delete buttons. Real-time Convex subscription.</td>
+      </tr>
+      <tr>
+        <td><code>/my-trips/[tripId]</code></td>
+        <td>Dynamic</td>
+        <td><strong>Trip Detail View</strong> — Full Timeline itinerary for a specific saved trip. Fetches by tripId from URL params.</td>
+      </tr>
+      <tr>
+        <td><code>/sign-in</code></td>
+        <td>Dynamic</td>
+        <td><strong>Sign In</strong> — Clerk's hosted sign-in component.</td>
+      </tr>
+      <tr>
+        <td><code>/sign-up</code></td>
+        <td>Dynamic</td>
+        <td><strong>Sign Up</strong> — Clerk's hosted registration component.</td>
+      </tr>
+      <tr>
+        <td><code>/api/aimodel</code></td>
+        <td>API Route</td>
+        <td><strong>AI Endpoint</strong> — POST handler that sends messages to Groq API and returns structured JSON.</td>
+      </tr>
+      <tr>
+        <td><code>/api/aimodel/google-place-detail</code></td>
+        <td>API Route</td>
+        <td><strong>Google Places Proxy</strong> — Proxies requests to Google Places API for place photos.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 11. STATE MANAGEMENT -->
+  <h2 id="state">11. State Management</h2>
+
+  <p>The application uses <strong>React Context API</strong> for state management without external libraries like Redux or Zustand:</p>
+
+  <h3>11.1 UserDetailContext (provider.tsx)</h3>
+  <p>Global context that holds the authenticated user's Convex record. When Clerk auth loads, it calls <code>CreateNewUser</code> mutation and stores the result. Every component can access the user's <code>_id</code>, <code>name</code>, <code>email</code>, and <code>imageUrl</code>.</p>
+
+  <h3>11.2 TripContext (context/TripContext.tsx)</h3>
+  <p>Scoped to the create-trip page. Enables real-time communication between ChatBox and Itinerary:</p>
+  <ul>
+    <li><strong>ChatBox</strong> calls <code>setTripData()</code> when the AI generates a trip plan</li>
+    <li><strong>Itinerary</strong> reads <code>tripData</code> and renders the plan dynamically</li>
+    <li>This avoids prop drilling and enables the split-screen panels to communicate</li>
+  </ul>
+
+  <h3>11.3 Convex Real-Time Subscriptions</h3>
+  <p>Convex's <code>useQuery</code> hook creates <strong>live subscriptions</strong> to database queries. On the My Trips page, the trip list auto-updates when trips are added or deleted from any session — no manual refresh needed.</p>
+
+  <!-- 12. API ROUTES -->
+  <h2 id="api">12. API Routes</h2>
+
+  <h3>12.1 POST /api/aimodel</h3>
+  <p>The main AI endpoint. Accepts:</p>
+  <pre><code>// Request body
+{
+  "messages": [{ "role": "user", "content": "..." }, ...],
+  "isFinal": false  // true for final trip generation
+}
+
+// Chat response (isFinal: false)
+{
+  "responseText": "Where are you starting from?",
+  "ui": "none"
+}
+
+// Final response (isFinal: true)
+{
+  "trip_plan": { /* full itinerary JSON */ }
+}</code></pre>
+
+  <p><strong>Key implementation details:</strong></p>
+  <ul>
+    <li>Uses <code>response_format: { type: "json_object" }</code> to guarantee JSON output from the LLM</li>
+    <li>Two different system prompts: <code>CHAT_SYSTEM_PROMPT</code> for conversation and <code>FINAL_SYSTEM_PROMPT</code> for trip generation</li>
+    <li>Graceful error handling with fallback responses</li>
+  </ul>
+
+  <h3>12.2 POST /api/aimodel/google-place-detail</h3>
+  <p>Proxies requests to Google Places API (Text Search) to fetch place photos and details. Uses server-side API key to keep credentials secure.</p>
+
+  <div class="page-break"></div>
+
+  <!-- 13. RESPONSIVE -->
+  <h2 id="responsive">13. Responsive Design</h2>
+
+  <table>
+    <thead><tr><th>Breakpoint</th><th>Layout Behavior</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mobile (&lt;768px)</strong></td><td>Single column: hamburger menu, stacked chat/itinerary, 1-column cards, collapsed grids</td></tr>
+      <tr><td><strong>Tablet (768-1024px)</strong></td><td>2-column grids for cards, side-by-side panels for create-trip</td></tr>
+      <tr><td><strong>Desktop (&gt;1024px)</strong></td><td>Full 35%/65% split, 3-column hotel grids, all nav items visible</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Key Responsive Features</h3>
+  <ul>
+    <li><strong>Header:</strong> Full nav on desktop → hamburger menu on mobile with slide-down animation</li>
+    <li><strong>Create Trip:</strong> 35%/65% horizontal split on desktop → vertical stack on mobile</li>
+    <li><strong>My Trips:</strong> 3-column grid → 2-column → 1-column based on screen width</li>
+    <li><strong>Timeline:</strong> Side labels on desktop → inline labels on mobile</li>
+  </ul>
+
+  <!-- 14. SETUP -->
+  <h2 id="setup">14. Setup & Running</h2>
+
+  <h3>Prerequisites</h3>
+  <ul>
+    <li>Node.js 18+ installed</li>
+    <li>npm or yarn package manager</li>
+    <li>Accounts on: Clerk, Convex, Groq Cloud</li>
+  </ul>
+
+  <h3>Installation</h3>
+  <pre><code># Clone or navigate to project
+cd ai-trip
+
+# Install dependencies
+npm install
+
+# Start Convex dev server (Terminal 1)
+npx convex dev
+
+# Start Next.js dev server (Terminal 2)
+npm run dev
+
+# Open in browser
+# http://localhost:3000</code></pre>
+
+  <h3>Production Build</h3>
+  <pre><code># Build for production
+npm run build
+
+# Start production server
+npm start</code></pre>
+
+  <!-- 15. ENV -->
+  <h2 id="env">15. Environment Variables</h2>
+
+  <table>
+    <thead><tr><th>Variable</th><th>Source</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY</code></td><td>Clerk Dashboard</td><td>Client-side Clerk initialization</td></tr>
+      <tr><td><code>CLERK_SECRET_KEY</code></td><td>Clerk Dashboard</td><td>Server-side Clerk API access</td></tr>
+      <tr><td><code>NEXT_PUBLIC_CONVEX_URL</code></td><td>Convex Dashboard</td><td>Client-side Convex connection</td></tr>
+      <tr><td><code>CONVEX_DEPLOYMENT</code></td><td>npx convex dev</td><td>Convex deployment identifier</td></tr>
+      <tr><td><code>GROQ_API_KEY</code></td><td>Groq Console</td><td>Server-side AI model access</td></tr>
+      <tr><td><code>GOOGLE_PLACE_API_KEY</code></td><td>Google Cloud Console</td><td>Google Places API access</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box blue">
+    <p><strong>Security Note:</strong> Variables prefixed with <code>NEXT_PUBLIC_</code> are exposed to the browser. All other variables (CLERK_SECRET_KEY, GROQ_API_KEY, etc.) are only available server-side in API routes and are never sent to the client.</p>
+  </div>
+
+  <!-- 16. FUTURE -->
+  <h2 id="future">16. Future Enhancements</h2>
+
+  <ul>
+    <li>🗺️ <strong>Interactive Map</strong> — Embed Google Maps showing all activities pinned on a map for each day</li>
+    <li>📤 <strong>Share Trip</strong> — Generate shareable URLs so users can share itineraries with friends</li>
+    <li>✏️ <strong>Edit Itinerary</strong> — Allow users to modify generated plans (drag-drop activities, adjust times)</li>
+    <li>💰 <strong>Multi-Currency Support</strong> — Auto-detect user's currency based on location</li>
+    <li>🔔 <strong>Trip Reminders</strong> — Email notifications before trip start dates</li>
+    <li>📊 <strong>Analytics Dashboard</strong> — Track popular destinations, budget trends, user engagement</li>
+    <li>🌙 <strong>Dark Mode</strong> — Theme toggle (Tailwind's dark mode tokens are already defined in globals.css)</li>
+    <li>📱 <strong>PWA Support</strong> — Install as mobile app with offline itinerary access</li>
+    <li>🤝 <strong>Collaborative Planning</strong> — Multiple users plan a trip together in real-time</li>
+  </ul>
+
+  <hr>
+
+  <p style="text-align: center; color: var(--gray); margin-top: 40px; font-size: 13px;">
+    <strong>Plan Me a Trip</strong> — Built by Sidharth Chopra · April 2026<br>
+    Next.js · React · Convex · Clerk · Groq AI · Tailwind CSS
+  </p>
+
+</div>
+
+</body>
+</html>
