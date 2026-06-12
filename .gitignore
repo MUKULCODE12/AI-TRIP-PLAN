@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# nextjs
+.next/
+out/
+
+# environment variables
+.env
+.env.local
+.env.production
+.env.development.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# typescript
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# prisma
+prisma/dev.db
+prisma/dev.db-journal
