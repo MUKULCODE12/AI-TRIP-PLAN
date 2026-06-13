@@ -130,8 +130,8 @@ function TripDetailPage() {
   const fetchTrip = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/trips/${tripId}`
-      );
+  `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/trips/${tripId}`
+);
 
       setTrip(res.data);
     } catch (err) {
