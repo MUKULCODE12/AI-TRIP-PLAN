@@ -132,10 +132,11 @@ setMessages((prev) => [
     });
 
     await axios.post(
-  "http://localhost:5000/api/trips",
+  `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/trips`,
   {
     tripId: generateUUID(),
     tripData: tripPlan,
+    userId: userDetail?.id,
   }
 );
 
