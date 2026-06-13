@@ -124,20 +124,20 @@ function LocalTipsSection({ destination }: { destination: string }) {
     if (loaded) return;
     setLoading(true);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
+        },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
+          model: "llama3-8b-8192",
+          messages: [{ role: "user", content: `Give me 8 local tips and hidden gems for visiting ${destination}. Return ONLY a JSON array of strings, no other text. Example: ["tip1", "tip2"]` }],
           max_tokens: 1000,
-          messages: [{
-            role: "user",
-            content: `Give me 8 local tips and hidden gems for visiting ${destination}. Format as a JSON array of strings. Only return the JSON array, nothing else. Example: ["tip1", "tip2"]`
-          }]
         })
       });
       const data = await res.json();
-      const text = data.content?.[0]?.text || "[]";
+      const text = data.choices?.[0]?.message?.content || "[]";
       const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
       setTips(parsed);
       setLoaded(true);
@@ -185,20 +185,20 @@ function ActivityDetailModal({ activity, destination, onClose }: { activity: str
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
+          },
           body: JSON.stringify({
-            model: "claude-sonnet-4-6",
+            model: "llama3-8b-8192",
+            messages: [{ role: "user", content: `Give me detailed information about "${activity}" in ${destination}. Include: what it is, why it's famous, best time to visit, tips, nearby attractions, and approximate cost. Keep it concise and practical for a tourist.` }],
             max_tokens: 1000,
-            messages: [{
-              role: "user",
-              content: `Give me detailed information about "${activity}" in ${destination}. Include: what it is, why it's famous, best time to visit, tips, nearby attractions, and approximate cost. Keep it concise and practical for a tourist.`
-            }]
           })
         });
         const data = await res.json();
-        setInfo(data.content?.[0]?.text || "No information available.");
+        setInfo(data.choices?.[0]?.message?.content || "No information available.");
       } catch {
         setInfo("Could not load information. Please try again.");
       }
@@ -233,20 +233,20 @@ function HotelDetailModal({ hotel, destination, onClose }: { hotel: string; dest
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
+          },
           body: JSON.stringify({
-            model: "claude-sonnet-4-6",
+            model: "llama3-8b-8192",
+            messages: [{ role: "user", content: `Give me detailed information about "${hotel}" hotel in ${destination}. Include: amenities, location, nearby attractions, check-in/out times, what makes it special, and booking tips.` }],
             max_tokens: 1000,
-            messages: [{
-              role: "user",
-              content: `Give me detailed information about "${hotel}" hotel in ${destination}. Include: amenities, location, nearby attractions, check-in/out times, what makes it special, and booking tips.`
-            }]
           })
         });
         const data = await res.json();
-        setInfo(data.content?.[0]?.text || "No information available.");
+        setInfo(data.choices?.[0]?.message?.content || "No information available.");
       } catch {
         setInfo("Could not load information. Please try again.");
       }
