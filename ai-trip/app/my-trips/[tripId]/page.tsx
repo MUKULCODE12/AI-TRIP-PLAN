@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Timeline } from "@/components/ui/timeline";
-import { Wallet, Star, ArrowLeft, Loader, Plane, Map } from "lucide-react";
+import { Wallet, Star, ArrowLeft, Loader, Plane, Map, Cloud, Lightbulb, X, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import axios from "axios";
@@ -11,7 +11,6 @@ import axios from "axios";
 const smartQuery = (name: string) => {
   const lower = name.toLowerCase();
   if (lower.includes("hotel")) return `${name} luxury hotel`;
-  if (lower.includes("hostel")) return `${name} hostel room`;
   if (lower.includes("beach")) return `${name} beach tourism`;
   if (lower.includes("museum")) return `${name} museum`;
   if (lower.includes("tower")) return `${name} landmark`;
@@ -48,70 +47,228 @@ function SmartImage({ name, height = "h-40" }: { name: string; height?: string }
   return <img src={image} alt={name} className={`rounded-xl shadow object-cover ${height} w-full mb-2`} loading="lazy" />;
 }
 
-// ✈️ Flight Booking Links
+// ✈️ Flight Booking
 function FlightBookingSection({ origin, destination, duration }: { origin: string; destination: string; duration: string }) {
   const encode = encodeURIComponent;
-  const googleFlightsUrl = `https://www.google.com/travel/flights?q=flights+from+${encode(origin)}+to+${encode(destination)}`;
-  const makeMyTripUrl = `https://www.makemytrip.com/flights/international/`;
-  const skyscannerUrl = `https://www.skyscanner.co.in/transport/flights/${encode(origin)}/${encode(destination)}/`;
-
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
       <div className="flex items-center gap-3 mb-4">
-        <div className="bg-blue-600 text-white p-2 rounded-full">
-          <Plane size={20} />
-        </div>
+        <div className="bg-blue-600 text-white p-2 rounded-full"><Plane size={20} /></div>
         <div>
           <h2 className="text-xl font-bold text-gray-900">Book Your Flights</h2>
           <p className="text-sm text-gray-500">{origin} → {destination} • {duration}</p>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <a href={googleFlightsUrl} target="_blank" rel="noopener noreferrer">
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-2">
-            <Plane size={16} /> Google Flights
-          </Button>
+        <a href={`https://www.google.com/travel/flights?q=flights+from+${encode(origin)}+to+${encode(destination)}`} target="_blank" rel="noopener noreferrer">
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-2"><Plane size={16} /> Google Flights</Button>
         </a>
-        <a href={makeMyTripUrl} target="_blank" rel="noopener noreferrer">
-          <Button className="w-full bg-red-500 hover:bg-red-600 gap-2">
-            <Plane size={16} /> MakeMyTrip
-          </Button>
+        <a href="https://www.makemytrip.com/flights/international/" target="_blank" rel="noopener noreferrer">
+          <Button className="w-full bg-red-500 hover:bg-red-600 gap-2"><Plane size={16} /> MakeMyTrip</Button>
         </a>
-        <a href={skyscannerUrl} target="_blank" rel="noopener noreferrer">
-          <Button className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2">
-            <Plane size={16} /> Skyscanner
-          </Button>
+        <a href={`https://www.skyscanner.co.in/transport/flights/${encode(origin)}/${encode(destination)}/`} target="_blank" rel="noopener noreferrer">
+          <Button className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2"><Plane size={16} /> Skyscanner</Button>
         </a>
       </div>
     </div>
   );
 }
 
-// 🗺️ Map Section
-function MapSection({ destination, activities }: { destination: string; activities: string[] }) {
-  const allPlaces = [destination, ...activities].slice(0, 5);
-  const query = allPlaces.join("|");
-  const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(destination)}`;
-  const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(destination)}&output=embed`;
-
+// 🗺️ Map
+function MapSection({ destination }: { destination: string }) {
   return (
     <div className="border rounded-2xl overflow-hidden mb-8">
       <div className="flex items-center gap-2 p-4 bg-gray-50 border-b">
         <Map size={20} className="text-green-600" />
         <h2 className="text-lg font-bold">Trip Map — {destination}</h2>
-        <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="ml-auto">
+        <a href={`https://www.google.com/maps/search/${encodeURIComponent(destination)}`} target="_blank" rel="noopener noreferrer" className="ml-auto">
           <Button variant="outline" size="sm">Open in Google Maps</Button>
         </a>
       </div>
-      <iframe
-        src={embedUrl}
-        width="100%"
-        height="400"
-        style={{ border: 0 }}
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
+      <iframe src={`https://maps.google.com/maps?q=${encodeURIComponent(destination)}&output=embed`} width="100%" height="400" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+    </div>
+  );
+}
+
+// 🌤️ Weather
+function WeatherSection({ destination }: { destination: string }) {
+  const city = destination.split(",")[0];
+  return (
+    <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-6 mb-8">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="bg-sky-500 text-white p-2 rounded-full"><Cloud size={20} /></div>
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Weather & Best Time to Visit</h2>
+          <p className="text-sm text-gray-500">{destination}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href={`https://www.weather.com/weather/today/l/${encodeURIComponent(city)}`} target="_blank" rel="noopener noreferrer">
+          <Button variant="outline" className="w-full gap-2 border-sky-300 text-sky-700"><Cloud size={16} /> Check Current Weather</Button>
+        </a>
+        <a href={`https://www.google.com/search?q=best+time+to+visit+${encodeURIComponent(destination)}`} target="_blank" rel="noopener noreferrer">
+          <Button variant="outline" className="w-full gap-2 border-sky-300 text-sky-700"><Info size={16} /> Best Time to Visit</Button>
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// 💡 Local Tips Modal (AI powered)
+function LocalTipsSection({ destination }: { destination: string }) {
+  const [tips, setTips] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  const fetchTips = async () => {
+    if (loaded) return;
+    setLoading(true);
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [{
+            role: "user",
+            content: `Give me 8 local tips and hidden gems for visiting ${destination}. Format as a JSON array of strings. Only return the JSON array, nothing else. Example: ["tip1", "tip2"]`
+          }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text || "[]";
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      setTips(parsed);
+      setLoaded(true);
+    } catch {
+      setTips(["Check local tourist offices for free maps", "Use public transport to save money", "Try local street food", "Visit early morning to avoid crowds", "Download offline maps before you go"]);
+      setLoaded(true);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-6 mb-8">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="bg-amber-500 text-white p-2 rounded-full"><Lightbulb size={20} /></div>
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Local Tips & Hidden Gems</h2>
+          <p className="text-sm text-gray-500">AI-powered insider knowledge for {destination}</p>
+        </div>
+        {!loaded && (
+          <Button onClick={fetchTips} disabled={loading} className="ml-auto bg-amber-500 hover:bg-amber-600 gap-2">
+            {loading ? <Loader className="animate-spin" size={16} /> : <Lightbulb size={16} />}
+            {loading ? "Loading..." : "Get Tips"}
+          </Button>
+        )}
+      </div>
+      {tips.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {tips.map((tip, i) => (
+            <div key={i} className="flex gap-2 bg-white p-3 rounded-xl border border-amber-100">
+              <span className="text-amber-500 font-bold text-sm mt-0.5">💡</span>
+              <p className="text-sm text-gray-700">{tip}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// 🔍 Activity Detail Modal (AI powered)
+function ActivityDetailModal({ activity, destination, onClose }: { activity: string; destination: string; onClose: () => void }) {
+  const [info, setInfo] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-6",
+            max_tokens: 1000,
+            messages: [{
+              role: "user",
+              content: `Give me detailed information about "${activity}" in ${destination}. Include: what it is, why it's famous, best time to visit, tips, nearby attractions, and approximate cost. Keep it concise and practical for a tourist.`
+            }]
+          })
+        });
+        const data = await res.json();
+        setInfo(data.content?.[0]?.text || "No information available.");
+      } catch {
+        setInfo("Could not load information. Please try again.");
+      }
+      setLoading(false);
+    };
+    fetchInfo();
+  }, [activity, destination]);
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto p-6">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-bold text-gray-900">{activity}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={24} /></button>
+        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-10"><Loader className="animate-spin h-8 w-8 text-primary" /></div>
+        ) : (
+          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm">{info}</p>
+        )}
+        <Button onClick={onClose} className="w-full mt-4">Close</Button>
+      </div>
+    </div>
+  );
+}
+
+// 🏨 Hotel Detail Modal (AI powered)
+function HotelDetailModal({ hotel, destination, onClose }: { hotel: string; destination: string; onClose: () => void }) {
+  const [info, setInfo] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-6",
+            max_tokens: 1000,
+            messages: [{
+              role: "user",
+              content: `Give me detailed information about "${hotel}" hotel in ${destination}. Include: amenities, location, nearby attractions, check-in/out times, what makes it special, and booking tips.`
+            }]
+          })
+        });
+        const data = await res.json();
+        setInfo(data.content?.[0]?.text || "No information available.");
+      } catch {
+        setInfo("Could not load information. Please try again.");
+      }
+      setLoading(false);
+    };
+    fetchInfo();
+  }, [hotel, destination]);
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto p-6">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-bold text-gray-900">{hotel}</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={24} /></button>
+        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-10"><Loader className="animate-spin h-8 w-8 text-primary" /></div>
+        ) : (
+          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm">{info}</p>
+        )}
+        <Button onClick={onClose} className="w-full mt-4">Close</Button>
+      </div>
     </div>
   );
 }
@@ -121,13 +278,13 @@ function TripDetailPage() {
   const tripId = params.tripId as string;
   const [trip, setTrip] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedActivity, setSelectedActivity] = useState<{ name: string; destination: string } | null>(null);
+  const [selectedHotel, setSelectedHotel] = useState<{ name: string; destination: string } | null>(null);
 
   useEffect(() => {
     const fetchTrip = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/trips/${tripId}`
-        );
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000"}/api/trips/${tripId}`);
         setTrip(res.data);
       } catch (err) {
         console.error("Failed to fetch trip:", err);
@@ -151,24 +308,15 @@ function TripDetailPage() {
   if (trip === null) return (
     <div className="flex flex-col items-center justify-center h-[60vh] text-center px-4">
       <h2 className="text-2xl font-bold text-gray-700">Trip not found</h2>
-      <Link href="/my-trips">
-        <Button className="mt-6 rounded-full px-8"><ArrowLeft size={16} className="mr-2" />Back to My Trips</Button>
-      </Link>
+      <Link href="/my-trips"><Button className="mt-6 rounded-full px-8"><ArrowLeft size={16} className="mr-2" />Back to My Trips</Button></Link>
     </div>
   );
 
   const plan = trip.tripData;
   const tripData = plan?.trip_plan ? plan : { trip_plan: plan };
-
   const origin = tripData.trip_plan?.origin || "Delhi, India";
   const destination = tripData.trip_plan?.destination || "Unknown";
   const duration = tripData.trip_plan?.duration || "";
-
-  // Collect all activity names for map
-  const allActivities = (tripData.trip_plan?.itinerary || [])
-    .flatMap((day: any) => (day.activities || []).map((a: any) => a.activity || a.name || ""))
-    .filter(Boolean)
-    .slice(0, 4);
 
   const data = [
     {
@@ -183,16 +331,17 @@ function TripDetailPage() {
                 <h2 className="font-semibold text-lg">{hotelName}</h2>
                 <h2 className="text-gray-500 line-clamp-2 text-sm">{hotel.description || hotel.hotel_address}</h2>
                 <div className="flex justify-between items-center mt-2">
-                  <p className="flex gap-1 items-center text-green-600 font-medium">
-                    <Wallet size={16} />{hotel.pricePerNight || hotel.price_per_night}
-                  </p>
-                  <p className="text-yellow-500 flex gap-1 items-center font-medium">
-                    <Star size={16} fill="currentColor" />{hotel.rating}
-                  </p>
+                  <p className="flex gap-1 items-center text-green-600 font-medium"><Wallet size={16} />{hotel.pricePerNight || hotel.price_per_night}</p>
+                  <p className="text-yellow-500 flex gap-1 items-center font-medium"><Star size={16} fill="currentColor" />{hotel.rating}</p>
                 </div>
-                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotelName)}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="w-full mt-3">View on Map</Button>
-                </a>
+                <div className="flex gap-2 mt-3">
+                  <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotelName)}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button variant="outline" className="w-full gap-1"><Map size={14} /> Map</Button>
+                  </a>
+                  <Button className="flex-1 gap-1" onClick={() => setSelectedHotel({ name: hotelName, destination })}>
+                    <Info size={14} /> Details
+                  </Button>
+                </div>
               </div>
             );
           })}
@@ -206,7 +355,6 @@ function TripDetailPage() {
           <p className="col-span-1 md:col-span-2 text-xl font-bold text-primary">{dayData.title}</p>
           {(dayData.activities || []).map((activity: any, actIndex: number) => {
             const actName = activity.activity || activity.name || "Travel";
-            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(actName + " " + destination)}`;
             return (
               <div key={actIndex} className="p-4 border rounded-xl flex flex-col gap-2 hover:shadow-lg transition-shadow bg-white">
                 <SmartImage name={actName} height="h-48" />
@@ -215,11 +363,14 @@ function TripDetailPage() {
                 <p className="text-sm font-semibold text-green-600 mt-2 bg-green-50 w-fit px-2 py-1 rounded">
                   Estimated Cost: {activity.estimatedCost || activity.estimated_cost || "Free"}
                 </p>
-                <a href={mapsUrl} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" className="w-full mt-1 gap-1">
-                    <Map size={14} /> View on Map
+                <div className="flex gap-2 mt-1">
+                  <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(actName + " " + destination)}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full gap-1"><Map size={14} /> Map</Button>
+                  </a>
+                  <Button size="sm" className="flex-1 gap-1" onClick={() => setSelectedActivity({ name: actName, destination })}>
+                    <Info size={14} /> Deep Info
                   </Button>
-                </a>
+                </div>
               </div>
             );
           })}
@@ -230,19 +381,21 @@ function TripDetailPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
+      {selectedActivity && (
+        <ActivityDetailModal activity={selectedActivity.name} destination={selectedActivity.destination} onClose={() => setSelectedActivity(null)} />
+      )}
+      {selectedHotel && (
+        <HotelDetailModal hotel={selectedHotel.name} destination={selectedHotel.destination} onClose={() => setSelectedHotel(null)} />
+      )}
+
       <Link href="/my-trips">
-        <Button variant="ghost" className="mb-4 gap-2 text-gray-600 hover:text-gray-900">
-          <ArrowLeft size={18} />Back to My Trips
-        </Button>
+        <Button variant="ghost" className="mb-4 gap-2 text-gray-600 hover:text-gray-900"><ArrowLeft size={18} />Back to My Trips</Button>
       </Link>
 
-      {/* ✈️ Flight Booking */}
       <FlightBookingSection origin={origin} destination={destination} duration={duration} />
-
-      {/* 🗺️ Map */}
-      <MapSection destination={destination} activities={allActivities} />
-
-      {/* 📅 Timeline */}
+      <WeatherSection destination={destination} />
+      <LocalTipsSection destination={destination} />
+      <MapSection destination={destination} />
       <Timeline data={data} tripData={tripData} />
     </div>
   );
