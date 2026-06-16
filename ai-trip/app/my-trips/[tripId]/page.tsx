@@ -50,24 +50,66 @@ function SmartImage({ name, height = "h-40" }: { name: string; height?: string }
 // ✈️ Flight Booking
 function FlightBookingSection({ origin, destination, duration }: { origin: string; destination: string; duration: string }) {
   const encode = encodeURIComponent;
+  
+  // Check if route is likely domestic short distance (same country)
+  const originCountry = origin.split(",").pop()?.trim() || "";
+  const destCountry = destination.split(",").pop()?.trim() || "";
+  const isSameCountry = originCountry === destCountry;
+  const isIndia = originCountry.includes("India") && destCountry.includes("India");
+
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
       <div className="flex items-center gap-3 mb-4">
         <div className="bg-blue-600 text-white p-2 rounded-full"><Plane size={20} /></div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Book Your Flights</h2>
+          <h2 className="text-xl font-bold text-gray-900">Book Your Travel</h2>
           <p className="text-sm text-gray-500">{origin} → {destination} • {duration}</p>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+      {/* ✈️ Flights */}
+      <p className="text-sm font-semibold text-gray-600 mb-2">✈️ Flights</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
         <a href={`https://www.google.com/travel/flights?q=flights+from+${encode(origin)}+to+${encode(destination)}`} target="_blank" rel="noopener noreferrer">
           <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-2"><Plane size={16} /> Google Flights</Button>
         </a>
-        <a href="https://www.makemytrip.com/flights/international/" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.makemytrip.com/flights/" target="_blank" rel="noopener noreferrer">
           <Button className="w-full bg-red-500 hover:bg-red-600 gap-2"><Plane size={16} /> MakeMyTrip</Button>
         </a>
         <a href={`https://www.skyscanner.co.in/transport/flights/${encode(origin)}/${encode(destination)}/`} target="_blank" rel="noopener noreferrer">
           <Button className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2"><Plane size={16} /> Skyscanner</Button>
+        </a>
+      </div>
+
+      {/* 🚌 Bus & Train (India routes) */}
+      {isIndia && (
+        <>
+          <p className="text-sm font-semibold text-gray-600 mb-2">🚌 Bus & Train</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <a href={`https://www.redbus.in/bus-tickets/${encode(origin.split(",")[0].toLowerCase())}-to-${encode(destination.split(",")[0].toLowerCase())}`} target="_blank" rel="noopener noreferrer">
+              <Button className="w-full bg-red-600 hover:bg-red-700 gap-2">🚌 RedBus</Button>
+            </a>
+            <a href={`https://www.makemytrip.com/bus-tickets/${encode(origin.split(",")[0].toLowerCase())}-to-${encode(destination.split(",")[0].toLowerCase())}/`} target="_blank" rel="noopener noreferrer">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 gap-2">🚌 MMT Bus</Button>
+            </a>
+            <a href={`https://www.irctc.co.in/nget/train-search`} target="_blank" rel="noopener noreferrer">
+              <Button className="w-full bg-blue-800 hover:bg-blue-900 gap-2">🚂 IRCTC Train</Button>
+            </a>
+          </div>
+        </>
+      )}
+
+      {/* 🚗 Cab */}
+      <p className="text-sm font-semibold text-gray-600 mb-2">🚗 Cab & Self Drive</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <a href={`https://www.olacabs.com/`} target="_blank" rel="noopener noreferrer">
+          <Button variant="outline" className="w-full gap-2">🚗 Ola Outstation</Button>
+        </a>
+        <a href={`https://www.uber.com/`} target="_blank" rel="noopener noreferrer">
+          <Button variant="outline" className="w-full gap-2">🚗 Uber</Button>
+        </a>
+        <a href={`https://www.zoomcar.com/`} target="_blank" rel="noopener noreferrer">
+          <Button variant="outline" className="w-full gap-2">🚗 Zoomcar</Button>
         </a>
       </div>
     </div>
