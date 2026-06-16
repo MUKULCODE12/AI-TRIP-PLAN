@@ -50,12 +50,41 @@ function SmartImage({ name, height = "h-40" }: { name: string; height?: string }
 // ✈️ Flight Booking
 function FlightBookingSection({ origin, destination, duration }: { origin: string; destination: string; duration: string }) {
   const encode = encodeURIComponent;
-  
-  // Check if route is likely domestic short distance (same country)
-  const originCountry = origin.split(",").pop()?.trim() || "";
-  const destCountry = destination.split(",").pop()?.trim() || "";
-  const isSameCountry = originCountry === destCountry;
-  const isIndia = originCountry.includes("India") && destCountry.includes("India");
+  const [nearestAirport, setNearestAirport] = useState("");
+  const [loadingAirport, setLoadingAirport] = useState(true);
+
+  useEffect(() => {
+    const fetchNearestAirport = async () => {
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [{ 
+              role: "user", 
+              content: `What is the nearest airport to "${destination}"? If there is no airport in ${destination}, give the nearest city with an airport. Reply in this exact JSON format only, nothing else: {"city": "City Name", "airport": "Airport Full Name", "code": "IATA Code", "distance": "X km from ${destination}"}` 
+            }],
+            max_tokens: 200,
+          })
+        });
+        const data = await res.json();
+        const text = data.choices?.[0]?.message?.content || "{}";
+        const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+        setNearestAirport(parsed.city ? `${parsed.airport} (${parsed.code}) — ${parsed.distance}` : "");
+      } catch {
+        setNearestAirport("");
+      }
+      setLoadingAirport(false);
+    };
+    fetchNearestAirport();
+  }, [destination]);
+
+  const flightDestination = nearestAirport ? nearestAirport.split("(")[1]?.split(")")[0] || destination : destination;
+  const isIndia = origin.includes("India") && destination.includes("India");
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
@@ -67,21 +96,33 @@ function FlightBookingSection({ origin, destination, duration }: { origin: strin
         </div>
       </div>
 
+      {/* Nearest Airport Info */}
+      {loadingAirport ? (
+        <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
+          <Loader className="animate-spin" size={14} />
+          Finding nearest airport...
+        </div>
+      ) : nearestAirport ? (
+        <div className="bg-blue-100 border border-blue-200 rounded-xl px-4 py-2 mb-4 text-sm text-blue-800 flex items-center gap-2">
+          ✈️ <span>Nearest Airport to <b>{destination}</b>: <b>{nearestAirport}</b></span>
+        </div>
+      ) : null}
+
       {/* ✈️ Flights */}
       <p className="text-sm font-semibold text-gray-600 mb-2">✈️ Flights</p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-        <a href={`https://www.google.com/travel/flights?q=flights+from+${encode(origin)}+to+${encode(destination)}`} target="_blank" rel="noopener noreferrer">
+        <a href={`https://www.google.com/travel/flights?q=flights+from+${encode(origin)}+to+${encode(nearestAirport || destination)}`} target="_blank" rel="noopener noreferrer">
           <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-2"><Plane size={16} /> Google Flights</Button>
         </a>
         <a href="https://www.makemytrip.com/flights/" target="_blank" rel="noopener noreferrer">
           <Button className="w-full bg-red-500 hover:bg-red-600 gap-2"><Plane size={16} /> MakeMyTrip</Button>
         </a>
-        <a href={`https://www.skyscanner.co.in/transport/flights/${encode(origin)}/${encode(destination)}/`} target="_blank" rel="noopener noreferrer">
+        <a href={`https://www.skyscanner.co.in/`} target="_blank" rel="noopener noreferrer">
           <Button className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2"><Plane size={16} /> Skyscanner</Button>
         </a>
       </div>
 
-      {/* 🚌 Bus & Train (India routes) */}
+      {/* 🚌 Bus & Train */}
       {isIndia && (
         <>
           <p className="text-sm font-semibold text-gray-600 mb-2">🚌 Bus & Train</p>
@@ -89,7 +130,7 @@ function FlightBookingSection({ origin, destination, duration }: { origin: strin
             <a href={`https://www.redbus.in/bus-tickets/${encode(origin.split(",")[0].toLowerCase())}-to-${encode(destination.split(",")[0].toLowerCase())}`} target="_blank" rel="noopener noreferrer">
               <Button className="w-full bg-red-600 hover:bg-red-700 gap-2">🚌 RedBus</Button>
             </a>
-            <a href={`https://www.makemytrip.com/bus-tickets/${encode(origin.split(",")[0].toLowerCase())}-to-${encode(destination.split(",")[0].toLowerCase())}/`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://www.makemytrip.com/bus-tickets/`} target="_blank" rel="noopener noreferrer">
               <Button className="w-full bg-orange-500 hover:bg-orange-600 gap-2">🚌 MMT Bus</Button>
             </a>
             <a href={`https://www.irctc.co.in/nget/train-search`} target="_blank" rel="noopener noreferrer">
@@ -102,13 +143,13 @@ function FlightBookingSection({ origin, destination, duration }: { origin: strin
       {/* 🚗 Cab */}
       <p className="text-sm font-semibold text-gray-600 mb-2">🚗 Cab & Self Drive</p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <a href={`https://www.olacabs.com/`} target="_blank" rel="noopener noreferrer">
+        <a href="https://www.olacabs.com/" target="_blank" rel="noopener noreferrer">
           <Button variant="outline" className="w-full gap-2">🚗 Ola Outstation</Button>
         </a>
-        <a href={`https://www.uber.com/`} target="_blank" rel="noopener noreferrer">
+        <a href="https://www.uber.com/" target="_blank" rel="noopener noreferrer">
           <Button variant="outline" className="w-full gap-2">🚗 Uber</Button>
         </a>
-        <a href={`https://www.zoomcar.com/`} target="_blank" rel="noopener noreferrer">
+        <a href="https://www.zoomcar.com/" target="_blank" rel="noopener noreferrer">
           <Button variant="outline" className="w-full gap-2">🚗 Zoomcar</Button>
         </a>
       </div>
