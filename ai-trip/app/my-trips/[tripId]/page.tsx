@@ -176,6 +176,61 @@ function MapSection({ destination }: { destination: string }) {
 // 🌤️ Weather
 function WeatherSection({ destination }: { destination: string }) {
   const city = destination.split(",")[0];
+  const [weather, setWeather] = useState<any>(null);
+  const [bestTime, setBestTime] = useState("");
+  const [loadingWeather, setLoadingWeather] = useState(true);
+  const [loadingBestTime, setLoadingBestTime] = useState(true);
+
+  useEffect(() => {
+    // Fetch current weather
+    const fetchWeather = async () => {
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}&units=metric`
+        );
+        const data = await res.json();
+        if (data.cod === 200) setWeather(data);
+      } catch {
+        setWeather(null);
+      }
+      setLoadingWeather(false);
+    };
+
+    // Fetch best time via Groq
+    const fetchBestTime = async () => {
+      try {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [{ role: "user", content: `What is the best time to visit ${destination}? Give a 2-3 line practical answer for tourists.` }],
+            max_tokens: 150,
+          })
+        });
+        const data = await res.json();
+        setBestTime(data.choices?.[0]?.message?.content || "");
+      } catch {
+        setBestTime("");
+      }
+      setLoadingBestTime(false);
+    };
+
+    fetchWeather();
+    fetchBestTime();
+  }, [city, destination]);
+
+  const getWeatherIcon = (main: string) => {
+    const icons: Record<string, string> = {
+      Clear: "☀️", Clouds: "☁️", Rain: "🌧️", Snow: "❄️",
+      Thunderstorm: "⛈️", Drizzle: "🌦️", Mist: "🌫️", Fog: "🌫️"
+    };
+    return icons[main] || "🌡️";
+  };
+
   return (
     <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-6 mb-8">
       <div className="flex items-center gap-3 mb-4">
@@ -185,13 +240,38 @@ function WeatherSection({ destination }: { destination: string }) {
           <p className="text-sm text-gray-500">{destination}</p>
         </div>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <a href={`https://www.weather.com/weather/today/l/${encodeURIComponent(city)}`} target="_blank" rel="noopener noreferrer">
-          <Button variant="outline" className="w-full gap-2 border-sky-300 text-sky-700"><Cloud size={16} /> Check Current Weather</Button>
-        </a>
-        <a href={`https://www.google.com/search?q=best+time+to+visit+${encodeURIComponent(destination)}`} target="_blank" rel="noopener noreferrer">
-          <Button variant="outline" className="w-full gap-2 border-sky-300 text-sky-700"><Info size={16} /> Best Time to Visit</Button>
-        </a>
+        {/* Current Weather */}
+        <div className="bg-white rounded-xl p-4 border border-sky-100">
+          <p className="text-sm font-semibold text-gray-600 mb-2">🌡️ Current Weather</p>
+          {loadingWeather ? (
+            <div className="flex items-center gap-2"><Loader className="animate-spin" size={16} /><span className="text-sm text-gray-500">Loading...</span></div>
+          ) : weather ? (
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">{getWeatherIcon(weather.weather[0].main)}</span>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{Math.round(weather.main.temp)}°C</p>
+                <p className="text-sm text-gray-500 capitalize">{weather.weather[0].description}</p>
+                <p className="text-xs text-gray-400">Humidity: {weather.main.humidity}% • Wind: {Math.round(weather.wind.speed)} km/h</p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">Weather data unavailable</p>
+          )}
+        </div>
+
+        {/* Best Time to Visit */}
+        <div className="bg-white rounded-xl p-4 border border-sky-100">
+          <p className="text-sm font-semibold text-gray-600 mb-2">📅 Best Time to Visit</p>
+          {loadingBestTime ? (
+            <div className="flex items-center gap-2"><Loader className="animate-spin" size={16} /><span className="text-sm text-gray-500">Loading...</span></div>
+          ) : bestTime ? (
+            <p className="text-sm text-gray-700 leading-relaxed">{bestTime}</p>
+          ) : (
+            <p className="text-sm text-gray-500">Information unavailable</p>
+          )}
+        </div>
       </div>
     </div>
   );
