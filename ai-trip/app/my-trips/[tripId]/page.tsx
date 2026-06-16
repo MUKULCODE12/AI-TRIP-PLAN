@@ -206,7 +206,7 @@ function WeatherSection({ destination }: { destination: string }) {
             "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
           },
           body: JSON.stringify({
-            model: "llama3-8b-8192",
+            model: "llama-3.3-70b-versatile",
             messages: [{ role: "user", content: `What is the best time to visit ${destination}? Give a 2-3 line practical answer for tourists.` }],
             max_tokens: 150,
           })
@@ -294,7 +294,7 @@ function LocalTipsSection({ destination }: { destination: string }) {
           "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
         },
         body: JSON.stringify({
-          model: "llama3-8b-8192",
+          model: "llama-3.3-70b-versatile",
           messages: [{ role: "user", content: `Give me 8 local tips and hidden gems for visiting ${destination}. Return ONLY a JSON array of strings, no other text. Example: ["tip1", "tip2"]` }],
           max_tokens: 1000,
         })
@@ -355,7 +355,7 @@ function ActivityDetailModal({ activity, destination, onClose }: { activity: str
             "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
           },
           body: JSON.stringify({
-            model: "llama3-8b-8192",
+            model: "llama-3.3-70b-versatile",
             messages: [{ role: "user", content: `Give me detailed information about "${activity}" in ${destination}. Include: what it is, why it's famous, best time to visit, tips, nearby attractions, and approximate cost. Keep it concise and practical for a tourist.` }],
             max_tokens: 1000,
           })
@@ -403,7 +403,7 @@ function HotelDetailModal({ hotel, destination, onClose }: { hotel: string; dest
             "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
           },
           body: JSON.stringify({
-            model: "llama3-8b-8192",
+            model: "llama-3.3-70b-versatile",
             messages: [{ role: "user", content: `Give me detailed information about "${hotel}" hotel in ${destination}. Include: amenities, location, nearby attractions, check-in/out times, what makes it special, and booking tips.` }],
             max_tokens: 1000,
           })
