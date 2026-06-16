@@ -63,7 +63,7 @@ function FlightBookingSection({ origin, destination, duration }: { origin: strin
             "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GROQ_API_KEY}`
           },
           body: JSON.stringify({
-            model: "llama3-8b-8192",
+            model: "llama-3.3-70b-versatile",
             messages: [{ 
               role: "user", 
               content: `What is the nearest airport to "${destination}"? If there is no airport in ${destination}, give the nearest city with an airport. Reply in this exact JSON format only, nothing else: {"city": "City Name", "airport": "Airport Full Name", "code": "IATA Code", "distance": "X km from ${destination}"}` 
